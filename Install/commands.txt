@@ -1,0 +1,18 @@
+1. Go to the downloaded folder
+
+cd Pi-Dashboard/Install/
+
+2. Make necessary files executable
+
+sudo chmod 777 install-pkgs.sh
+sudo chmod 777 LCD-helper.sh
+
+3. Install necessary packages using
+
+sudo ./install-pkgs.sh
+
+4. Install LCD-show and turn on LCD display
+
+sudo ./LCD-helper.sh
+
+5. 

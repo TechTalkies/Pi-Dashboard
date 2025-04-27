@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Config</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 1rem;
+            background: #e5ecf4;
+            color: #333;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 0.6rem;
+            font-size: 1rem;
+            margin-top: 0.25rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 1rem;
+            padding: 0.75rem 1.2rem;
+            font-size: 1rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 1rem;
+        }
+        li {
+            margin-top: 0.5rem;
+            background: #f8f9fa;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+            border: 1px solid #dcdcdc;
+        }
+        .close {
+            color: #e74c3c;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding-left: 1rem;
+        }
+        .task-input-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        .task-input-row input {
+            flex: 1;
+            margin-top: 0;
+        }
+        .task-input-row button {
+            margin-top: 0.25rem;
+        }
+        input[type="checkbox"] {
+            accent-color: #3498db;
+            width: auto;
+            height: 1em;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .task-text {
+            white-space: normal;
+            word-break: break-word;
+            flex-grow: 1;
+        }
+        .save-settings-btn {
+            background-color: #27ae60;
+            margin-top: 2rem;
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .save-settings-btn:hover {
+            background-color: #2ecc71;
+        }
+        #statusMessage {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
+            min-height: 1.2em;
+        }
+        .status-success {
+            color: #27ae60;
+        }
+        .status-error {
+            color: #e74c3c;
+        }
+        .card-actions {
+            text-align: right;
+            margin-top: 1rem;
+        }
+        .card-actions button {
+            margin-top: 0;
+        }
+
+        .password-input-container {
+            display: flex; /* Use flexbox */
+            align-items: center; /* Vertically center the elements */
+            position: relative;
+        }
+
+        .password-input-container input[type="password"],
+        .password-input-container input[type="text"] {
+            flex: 1; /* Allow input to take up available space */
+            margin-right: 0; /* Remove default margin */
+            width: calc(100% - 2.5rem);  /* Make input shorter to accommodate button.  2.5rem is button width */
+        }
+
+        .password-toggle-button {
+            position: absolute;
+            right: 0; /* Position button to the right edge of container */
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            height: 2.5rem;  /* Give button a fixed height */
+            width: 2.5rem; /* give button a fixed width */
+        }
+
+        .password-toggle-icon {
+            width: 1rem;
+            height: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard Configuration</h1>
+
+        <form id="configForm">
+
+            <div class="card">
+                <h2>Task List</h2>
+                <label for="newTask">New Task:</label>
+                <div class="task-input-row">
+                    <input type="text" id="newTask" placeholder="Enter new task description" />
+                    <button type="button" onclick="addTask()">Add</button>
+                </div>
+                <ul id="taskList">
+                </ul>
+                <button type="button" onclick="deleteCompletedTasks()">Delete Completed</button>
+                <div class="card-actions">
+                    <button type="button" onclick="saveTasks()">Save Tasks</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Weather API</h2>
+                <label for="apiKey">API Key:</label>
+                <div class="password-input-container">
+                    <input type="password" id="apiKey" name="apiKey" />
+                    <button type="button" class="password-toggle-button" id="togglePassword">
+                        <img  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-eye'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='3'%3E%3C/circle%3E%3C/svg%3E"  class="password-toggle-icon" id="password-toggle-icon">
+                    </button>
+                </div>
+                <label for="latitude">Latitude:</label>
+                <input type="text" id="latitude" name="latitude"  />
+                <label for="longitude">Longitude:</label>
+                <input type="text" id="longitude" name="longitude"  />
+                <div class="card-actions">
+                    <button type="button" onclick="saveWeatherConfig()">Save Weather</button>
+                </div>
+            </div>
+
+            <div id="statusMessage"></div>
+
+        </form>
+    </div>
+
+    <script>
+        const taskList = document.getElementById("taskList");
+        const newTaskInput = document.getElementById("newTask");
+        const apiKeyInput = document.getElementById('apiKey');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const statusMessage = document.getElementById('statusMessage');
+        const configForm = document.getElementById('configForm');
+        const togglePasswordButton = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('apiKey');
+        const passwordToggleIcon = document.getElementById('password-toggle-icon');
+
+
+        // --- Task Rendering ---
+        function renderTask(task) {
+            const li = document.createElement("li");
+            li.dataset.text = task.taskText;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "task-checkbox";
+            checkbox.checked = task.isChecked;
+            checkbox.addEventListener("change", function () {
+                li.style.textDecoration = checkbox.checked ? "line-through" : "none";
+            });
+
+            const textSpan = document.createElement("span");
+            textSpan.className = "task-text";
+            textSpan.textContent = task.taskText;
+
+            const deleteSpan = document.createElement("span");
+            deleteSpan.textContent = "×";
+            deleteSpan.className = "close";
+            deleteSpan.onclick = function () {
+                li.remove();
+            };
+
+            const taskItemDiv = document.createElement("div");
+            taskItemDiv.className = "task-item";
+            taskItemDiv.appendChild(checkbox);
+            taskItemDiv.appendChild(textSpan);
+
+            li.appendChild(taskItemDiv);
+            li.appendChild(deleteSpan);
+
+            if (task.isChecked) {
+                li.style.textDecoration = "line-through";
+            }
+
+            taskList.appendChild(li);
+        }
+
+        // --- Event Handlers ---
+        function addTask() {
+            const text = newTaskInput.value.trim();
+            if (!text) return;
+            const newTask = { taskText: text, isChecked: false };
+            renderTask(newTask);
+            newTaskInput.value = "";
+        }
+
+        newTaskInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTask();
+            }
+        });
+
+        function deleteCompletedTasks() {
+            if (confirm("Are you sure you want to delete all completed tasks?")) {
+                const completedTasks = taskList.querySelectorAll("li input[type='checkbox']:checked");
+                completedTasks.forEach(function (checkbox) {
+                    checkbox.closest('li').remove();
+                });
+            }
+        }
+
+
+
+        // --- Data Loading and Saving (Flask) ---
+        async function loadData() {
+            try {
+                const response = await fetch('/get_config'); //  Flask route
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                apiKeyInput.value = data.apiKey || '';
+                latitudeInput.value = data.latitude || '';
+                longitudeInput.value = data.longitude || '';
+
+                taskList.innerHTML = ''; // Clear existing tasks
+                if (data.tasks && Array.isArray(data.tasks)) {
+                    data.tasks.forEach(task => renderTask(task));
+                }
+                console.log('Data loaded successfully.');
+
+            } catch (error) {
+                console.error('Error loading configuration:', error);
+                showStatus('Could not load existing configuration.', true); // Show message
+            }
+        }
+
+
+
+        async function saveData() {
+            const tasks = Array.from(taskList.querySelectorAll("li")).map(li => {
+                const taskText = li.querySelector(".task-text").textContent.trim();
+                const isChecked = li.querySelector("input[type='checkbox']").checked;
+                return { taskText, isChecked };
+            });
+
+            const configData = {
+			apiKey: apiKeyInput.value.trim() || null,
+			latitude: latitudeInput.value.trim() || null,
+			longitude: longitudeInput.value.trim() || null,
+			tasks: tasks
+		};
+		
+		console.log("Config data before stringify:", configData);
+
+            try {
+				const jsonData = JSON.stringify(configData, null, 2);
+				const quotedJson = jsonData.replace(/'/g, '"');
+				console.log("JSON data:", jsonData);
+				console.log("JSON data:", quotedJson);
+                const response = await fetch('/update_config', { // Flask route
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: quotedJson
+                });
+                if (!response.ok) {
+                      let errorMsg = `Error saving configuration: ${response.statusText}`;
+                      try{
+                        const errorData = await response.json();
+                        errorMsg = errorData.message || errorMsg;
+                      } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+                const result = await response.json();
+                showStatus(result.message || 'Configuration saved successfully!', true);
+                console.log('Configuration saved:', configData);
+                 // Reload data after successful save
+                await loadData();
+
+            } catch (error) {
+                console.error('Error saving configuration:', error);
+                showStatus(`Failed to save configuration: ${error.message}`, false);
+            }
+        }
+
+
+
+        // --- Function to display status messages ---
+        function showStatus(message, isTemporary = false) {
+            statusMessage.textContent = message;
+            statusMessage.className = isTemporary ? 'status-success' : 'status-error';
+            if (isTemporary) {
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                    statusMessage.className = '';
+                }, 3000);
+            }
+        }
+
+        // --- Event Listeners ---
+        function saveTasks() {
+            saveData(); // Call the saveData function
+        }
+
+        function saveWeatherConfig(){
+            saveData();
+        }
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        togglePasswordButton.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            // Update the icon
+            const iconUrl = type === 'password'
+                ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-eye'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='3'%3E%3C/circle%3E%3C/svg%3E"
+                : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-eye-off'%3E%3Cpath d='M10.79 12.93a4 4 0 0 1-1.79-1.93'%3E%3C/path%3E%3Cpath d='M15 9a4 4 0 1 1-6 6'%3E%3C/path%3E%3Cline x1='2' x2='22' y1='12' y2='12'%3E%3C/line%3E%3Cline x1='2' x2='22' y1='2' y2='2'%3E%3C/line%3E%3Cline x1='2' x2='22' y1='22' y2='22'%3E%3C/line%3E%3C/svg%3E";
+            passwordToggleIcon.src = iconUrl;
+        });
+
+    </script>
+</body>
+</html>
